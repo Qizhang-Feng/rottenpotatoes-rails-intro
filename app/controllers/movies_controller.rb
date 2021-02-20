@@ -7,7 +7,29 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    # @movies = Movie.all
+
+    params[:ratings] = params[:ratings].nil? ? session[:ratings] : params[:ratings]
+    params[:sort] = params[:sort].nil? ? session[:sort] : params[:sort]
+    
+    @all_ratings = ['G','PG','PG-13','R','NC-17']
+    @ratings_to_show = params[:ratings] == nil ? @all_ratings : params[:ratings].keys
+    @movies = Movie.with_ratings(@ratings_to_show)
+    # if sort
+    if params[:sort] != nil
+      @movies = @movies.order(params[:sort])
+    end
+    
+    # save all setting in session
+    session[:ratings] = params[:ratings]
+    session[:sort] = params[:sort]
+    puts params[:sort]
+    
+    if params[:sort] == "title"
+      @css_title = "hilite bg-warning"
+    elsif params[:sort] == "release_date"
+      @css_release_date = "hilite bg-warning"
+    end
   end
 
   def new
