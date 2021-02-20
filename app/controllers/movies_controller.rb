@@ -8,7 +8,10 @@ class MoviesController < ApplicationController
 
   def index
     # @movies = Movie.all
-
+    if request.path == '/'
+      reset_session
+    end
+    
     params[:ratings] = params[:ratings].nil? ? session[:ratings] : params[:ratings]
     params[:sort] = params[:sort].nil? ? session[:sort] : params[:sort]
     
